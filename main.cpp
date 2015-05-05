@@ -31,6 +31,23 @@ void PrintDistanceMap(const vector<vector<int>> &distance, string word1, string 
 	}
 }
 
+void InitDistanceMap(vector<vector<int>> &distance, string word1, string word2)
+{
+	int mapRowSize = word1.length() + 1;
+	int mapCollumnSize = word2.length() + 1;
+
+	distance.resize(mapRowSize, vector<int>(mapCollumnSize, 0));
+
+	for (int i = 0; i < distance.size(); i++)
+	{
+		distance[i][0] = i;
+	}
+	for (int i = 0; i < distance[0].size(); i++)
+	{
+		distance[0][i] = i;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc == 3)
@@ -43,18 +60,7 @@ int main(int argc, char* argv[])
 		cout << "w2: " << word[1] << " len: "<< word[1].length() << endl;
 		
 		vector<vector<int>> distance;
-		distance.resize(word[1].length() + 1, vector<int>(word[0].length() + 1, 0));
-
 		
-		for (int i = 0; i < distance.size(); i++)
-		{
-			distance[i][0] = i;
-		}
-
-		for (int i = 0; i < distance[0].size(); i++)
-		{
-			distance[0][i] = i;
-		}
 
 		PrintDistanceMap(distance, word[0], word[1]);
 
