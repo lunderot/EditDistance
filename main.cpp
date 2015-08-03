@@ -1,18 +1,19 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
 void PrintDistanceMap(const vector<vector<int>> &distance, string word1, string word2)
 {
 	cout << "    ";
-	for (int i = 0; i < word1.length(); i++)
+	for (unsigned int i = 0; i < word2.length(); i++)
 	{
-		cout << word1[i] << " ";
+		cout << word2[i] << " ";
 	}
 	cout << endl;
-	for (int i = 0; i < distance.size(); i++)
+	for (unsigned int i = 0; i < distance.size(); i++)
 	{
 		if (i == 0)
 		{
@@ -20,10 +21,10 @@ void PrintDistanceMap(const vector<vector<int>> &distance, string word1, string 
 		}
 		else
 		{
-			cout << word2[i - 1];
+			cout << word1[i - 1];
 		}
 		cout << " ";
-		for (int j = 0; j < distance[0].size(); j++)
+		for (unsigned int j = 0; j < distance[0].size(); j++)
 		{
 			cout << distance[i][j] << " ";
 		}
@@ -38,13 +39,31 @@ void InitDistanceMap(vector<vector<int>> &distance, string word1, string word2)
 
 	distance.resize(mapRowSize, vector<int>(mapCollumnSize, 0));
 
-	for (int i = 0; i < distance.size(); i++)
+	for (unsigned int i = 0; i < distance.size(); i++)
 	{
 		distance[i][0] = i;
 	}
-	for (int i = 0; i < distance[0].size(); i++)
+	for (unsigned int i = 0; i < distance[0].size(); i++)
 	{
 		distance[0][i] = i;
+	}
+}
+
+void CalculateDistanceMap(vector<vector<int>> &distance, string word1, string word2)
+{
+	int mapRowSize = word1.length() + 1;
+	int mapCollumnSize = word2.length() + 1;
+
+	for (int i = 1; i < mapRowSize; i++)
+	{
+		for (int j = 1; j < mapCollumnSize; j++)
+		{
+			if (word1[i] == word2[j])
+			{
+				distance[i][j] = min(distance[i - 1][j], min(distance[i][j - 1], distance[i - 1][j - 1])) + 1;
+				cout << " distance[" << i << "][" << j << "] = " << distance[i][j] << endl;
+			}
+		}
 	}
 }
 
@@ -56,13 +75,18 @@ int main(int argc, char* argv[])
 		word[0] = string(argv[1]);
 		word[1] = string(argv[2]);
 
-		cout << "w1: " << word[0] << " len: "<< word[0].length() << endl;
-		cout << "w2: " << word[1] << " len: "<< word[1].length() << endl;
-		
+		cout << "w1: " << word[0] << " len: " << word[0].length() << endl;
+		cout << "w2: " << word[1] << " len: " << word[1].length() << endl;
+
+
 		vector<vector<int>> distance;
-		
+		InitDistanceMap(distance, word[0], word[1]);
+		PrintDistanceMap(distance, word[0], word[1]);
+
+		CalculateDistanceMap(distance, word[0], word[1]);
 
 		PrintDistanceMap(distance, word[0], word[1]);
+
 
 	}
 	else
