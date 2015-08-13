@@ -58,11 +58,13 @@ void CalculateDistanceMap(vector<vector<int>> &distance, string word1, string wo
 	{
 		for (int j = 1; j < mapCollumnSize; j++)
 		{
-			if (word1[i] == word2[j])
+			int count = 0;
+			if (word1[i - 1] != word2[j - 1])
 			{
-				distance[i][j] = min(distance[i - 1][j], min(distance[i][j - 1], distance[i - 1][j - 1])) + 1;
-				cout << " distance[" << i << "][" << j << "] = " << distance[i][j] << endl;
+				count = 1;
 			}
+			distance[i][j] = min(distance[i - 1][j], min(distance[i][j - 1], distance[i - 1][j - 1])) + count;
+			cout << " distance[" << i << "][" << j << "] = " << distance[i][j] << endl;
 		}
 	}
 }
