@@ -49,7 +49,8 @@ void InitDistanceMap(vector<vector<int>> &distance, string word1, string word2)
 	}
 }
 
-void CalculateDistanceMap(vector<vector<int>> &distance, string word1, string word2)
+void CalculateDistanceMap(	vector<vector<int>> &distance, string word1, string word2,
+							int copyCost, int replaceCost, int deleteCost, int insertCost, int twiddleCost, int killCost)
 {
 	int mapRowSize = word1.length() + 1;
 	int mapCollumnSize = word2.length() + 1;
@@ -71,11 +72,17 @@ void CalculateDistanceMap(vector<vector<int>> &distance, string word1, string wo
 
 int main(int argc, char* argv[])
 {
-	if (argc == 3)
+	if (argc == 9)
 	{
 		string word[2];
 		word[0] = string(argv[1]);
 		word[1] = string(argv[2]);
+
+		int cost[6];
+		for (int i = 0; i < 6; i++)
+		{
+			cost[i] = atoi(argv[i + 3]);
+		}
 
 		cout << "w1: " << word[0] << " len: " << word[0].length() << endl;
 		cout << "w2: " << word[1] << " len: " << word[1].length() << endl;
@@ -85,7 +92,7 @@ int main(int argc, char* argv[])
 		InitDistanceMap(distance, word[0], word[1]);
 		PrintDistanceMap(distance, word[0], word[1]);
 
-		CalculateDistanceMap(distance, word[0], word[1]);
+		CalculateDistanceMap(distance, word[0], word[1], cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
 
 		PrintDistanceMap(distance, word[0], word[1]);
 
@@ -93,7 +100,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		cout << "Usage: " << argv[0] << " string1 string2" << endl;
+		cout << "Usage: " << argv[0] << " string1 string2 copyCost replaceCost deleteCost insertCost twiddleCost killCost" << endl;
 	}
 	cin.get();
 	return 0;
