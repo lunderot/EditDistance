@@ -3,6 +3,8 @@
 #include <string>
 #include <algorithm>
 
+#include "Operation.h"
+
 using namespace std;
 
 void PrintDistanceMap(const vector<vector<int>> &distance, string word1, string word2)
@@ -95,7 +97,6 @@ int main(int argc, char* argv[])
 		CalculateDistanceMap(distance, word[0], word[1], cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
 
 		PrintDistanceMap(distance, word[0], word[1]);
-
 
 	}
 	else
