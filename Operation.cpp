@@ -1,5 +1,6 @@
 #include "Operation.h"
 
+Operation::PrintType Operation::printType = Operation::PrintType::Long;
 
 Operation::Operation()
 {
@@ -29,19 +30,29 @@ Operation::Operation(Type type, int position)
 	this->position = position;
 }
 
-
-
 Operation::~Operation()
 {
 }
 
+void Operation::SetPrintType(PrintType printType)
+{
+	Operation::printType = printType;
+}
+
+Operation::PrintType Operation::GetPrintType()
+{
+	return printType;
+}
+
 std::ostream& operator<<(std::ostream& os, const Operation& o)
 {
-	switch (o.type)
+	if (o.printType == Operation::PrintType::Long)
 	{
+		switch (o.type)
+		{
 		case Operation::None:
 			os << "None";
-		break;
+			break;
 		case Operation::Copy:
 			os << "Copy";
 			break;
@@ -62,6 +73,36 @@ std::ostream& operator<<(std::ostream& os, const Operation& o)
 			break;
 		default:
 			break;
+		}
+	}
+	else
+	{
+		switch (o.type)
+		{
+		case Operation::None:
+			os << "n ";
+			break;
+		case Operation::Copy:
+			os << "c ";
+			break;
+		case Operation::Replace:
+			os << "r" << o.letter;
+			break;
+		case Operation::Delete:
+			os << "d ";
+			break;
+		case Operation::Insert:
+			os << "i" << o.letter;
+			break;
+		case Operation::Twiddle:
+			os << "t ";
+			break;
+		case Operation::Kill:
+			os << "k" << o.position;
+			break;
+		default:
+			break;
+		}
 	}
 	return os;
 }
