@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <limits>
 
 #include "Operation.h"
 
@@ -34,40 +35,97 @@ void PrintDistanceMap(const vector<vector<int>> &distance, string word1, string 
 	}
 }
 
-void InitDistanceMap(vector<vector<int>> &distance, string word1, string word2)
+void PrintOperationMap(const vector<vector<Operation>>& operation, string word1, string word2)
 {
-	int mapRowSize = word1.length() + 1;
-	int mapCollumnSize = word2.length() + 1;
-
-	distance.resize(mapRowSize, vector<int>(mapCollumnSize, 0));
-
-	for (unsigned int i = 0; i < distance.size(); i++)
+	cout << "    ";
+	for (unsigned int i = 0; i < word2.length(); i++)
 	{
-		distance[i][0] = i;
+		cout << word2[i] << " ";
 	}
-	for (unsigned int i = 0; i < distance[0].size(); i++)
+	cout << endl;
+	for (unsigned int i = 0; i < operation.size(); i++)
 	{
-		distance[0][i] = i;
+		if (i == 0)
+		{
+			cout << " ";
+		}
+		else
+		{
+			cout << word1[i - 1];
+		}
+		cout << " ";
+		for (unsigned int j = 0; j < operation[0].size(); j++)
+		{
+			cout << operation[i][j] << " ";
+		}
+		cout << endl;
 	}
 }
 
-void CalculateDistanceMap(	vector<vector<int>> &distance, string word1, string word2,
-							int copyCost, int replaceCost, int deleteCost, int insertCost, int twiddleCost, int killCost)
+void InitMap(vector<vector<int>>& distance, vector<vector<Operation>>& operation, string word1, string word2, int deleteCost, int insertCost)
 {
 	int mapRowSize = word1.length() + 1;
-	int mapCollumnSize = word2.length() + 1;
+	int mapColumnSize = word2.length() + 1;
+
+	distance.resize(mapRowSize, vector<int>(mapColumnSize, numeric_limits<int>::max()));
+	operation.resize(mapRowSize, vector<Operation>(mapColumnSize));
+
+	for (unsigned int i = 0; i < distance.size(); i++)
+	{
+		distance[i][0] = i * deleteCost;
+		operation[i][0] = Operation(Operation::Delete);
+	}
+	for (unsigned int i = 0; i < distance[0].size(); i++)
+	{
+		distance[0][i] = i * insertCost;
+		operation[0][i] = Operation(Operation::Insert, word2[i]);
+	}
+}
+
+void CalculateDistanceMap(vector<vector<int>>& distance, vector<vector<Operation>>& operation, string word1, string word2,
+	int copyCost, int replaceCost, int deleteCost, int insertCost, int twiddleCost, int killCost)
+{
+	int mapRowSize = word1.length() + 1;
+	int mapColumnSize = word2.length() + 1;
 
 	for (int i = 1; i < mapRowSize; i++)
 	{
-		for (int j = 1; j < mapCollumnSize; j++)
+		for (int j = 1; j < mapColumnSize; j++)
 		{
-			int count = 0;
-			if (word1[i - 1] != word2[j - 1])
+			//Copy
+			if (word1[i - 1] == word2[j - 1])
 			{
-				count = 1;
+				distance[i][j] = distance[i - 1][j - 1] + copyCost;
+				operation[i][j] = Operation(Operation::Copy);
 			}
-			distance[i][j] = min(distance[i - 1][j], min(distance[i][j - 1], distance[i - 1][j - 1])) + count;
-			cout << " distance[" << i << "][" << j << "] = " << distance[i][j] << endl;
+			//Replace
+			if (word1[i - 1] != word2[j - 1] && distance[i - 1][j - 1] + replaceCost < distance[i][j])
+			{
+				distance[i][j] = distance[i - 1][j - 1] + replaceCost;
+				operation[i][j] = Operation(Operation::Replace, word2[j - 1]);
+			}
+			//Twiddle
+			if (i >= 2 && j >= 2 &&
+				word1[i - 1] == word2[j - 2] &&
+				word1[i - 2] == word2[j - 1] &&
+				distance[i - 2][j - 2] + twiddleCost < distance[i][j]
+				)
+			{
+				distance[i][j] = distance[i - 2][j - 2] + twiddleCost;
+				operation[i][j] = Operation(Operation::Twiddle);
+			}
+			//Delete
+			if (distance[i - 1][j] + deleteCost < distance[i][j])
+			{
+				distance[i][j] = distance[i - 1][j] + deleteCost;
+				operation[i][j] = Operation(Operation::Delete);
+			}
+			//Insert
+			if (distance[i][j - 1] + insertCost < distance[i][j])
+			{
+				distance[i][j] = distance[i][j - 1] + insertCost;
+				operation[i][j] = Operation(Operation::Insert, word2[j - 1]);
+			}
 		}
 	}
 }
@@ -76,6 +134,8 @@ int main(int argc, char* argv[])
 {
 	if (argc == 9)
 	{
+		Operation::SetPrintType(Operation::PrintType::Short);
+
 		string word[2];
 		word[0] = string(argv[1]);
 		word[1] = string(argv[2]);
@@ -86,18 +146,18 @@ int main(int argc, char* argv[])
 			cost[i] = atoi(argv[i + 3]);
 		}
 
-		cout << "w1: " << word[0] << " len: " << word[0].length() << endl;
-		cout << "w2: " << word[1] << " len: " << word[1].length() << endl;
-
-
 		vector<vector<int>> distance;
-		InitDistanceMap(distance, word[0], word[1]);
+		vector<vector<Operation>> operation;
+
+		InitMap(distance, operation, word[0], word[1], cost[2], cost[3]);
+
+		CalculateDistanceMap(distance, operation, word[0], word[1], cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
+
+		cout << "Cost:" << endl;
 		PrintDistanceMap(distance, word[0], word[1]);
 
-		CalculateDistanceMap(distance, word[0], word[1], cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
-
-		PrintDistanceMap(distance, word[0], word[1]);
-
+		cout << "Operations:" << endl;
+		PrintOperationMap(operation, word[0], word[1]);
 	}
 	else
 	{
