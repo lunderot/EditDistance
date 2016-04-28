@@ -62,6 +62,49 @@ void PrintOperationMap(const vector<vector<Operation>>& operation, string word1,
 	}
 }
 
+void PrintOperations(const vector<vector<Operation>>& operation, const vector<vector<int>> &distance, int i, int j)
+{
+	int nexti = -1;
+	int nextj = -1;
+	int nextdistance = std::numeric_limits<int>::max();
+	if (i <= 0 || j <= 0)
+	{
+		return;
+	}
+	cout << operation[i][j] << ' ';
+	if (distance[i - 1][j - 1] < nextdistance)
+	{
+		nextdistance = distance[i - 1][j - 1];
+		nexti = i - 1;
+		nextj = j - 1;
+	}
+	if (distance[i][j - 1] < nextdistance)
+	{
+		nextdistance = distance[i][j - 1];
+		nexti = i;
+		nextj = j - 1;
+	}
+	if (distance[i - 1][j] < nextdistance)
+	{
+		nextdistance = distance[i - 1][j];
+		nexti = i - 1;
+		nextj = j;
+	}
+	PrintOperations(operation, distance, nexti, nextj);
+}
+
+void PrintOperations(const vector<vector<Operation>>& operation, const vector<vector<int>> &distance)
+{
+	int isize = operation.size() - 1;
+	int jsize = operation[0].size() - 1;
+	PrintOperations(operation, distance, isize, jsize);
+}
+
+int GetDistance(const vector<vector<int>>& distance, string word1, string word2)
+{
+	return distance.back().back();
+}
+
 void InitMap(vector<vector<int>>& distance, vector<vector<Operation>>& operation, string word1, string word2, int deleteCost, int insertCost)
 {
 	int mapRowSize = word1.length() + 1;
@@ -158,6 +201,8 @@ int main(int argc, char* argv[])
 
 		cout << "Operations:" << endl;
 		PrintOperationMap(operation, word[0], word[1]);
+
+		PrintOperations(operation, distance);
 	}
 	else
 	{
