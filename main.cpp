@@ -37,10 +37,10 @@ void PrintDistanceMap(const vector<vector<int>> &distance, string word1, string 
 
 void PrintOperationMap(const vector<vector<Operation>>& operation, string word1, string word2)
 {
-	cout << "    ";
+	cout << "     ";
 	for (unsigned int i = 0; i < word2.length(); i++)
 	{
-		cout << word2[i] << " ";
+		cout << word2[i] << "  ";
 	}
 	cout << endl;
 	for (unsigned int i = 0; i < operation.size(); i++)
