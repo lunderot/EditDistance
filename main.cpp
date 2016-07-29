@@ -62,7 +62,7 @@ void PrintOperationMap(const vector<vector<Operation>>& operation, string word1,
 	}
 }
 
-void PrintOperations(const vector<vector<Operation>>& operation, const vector<vector<int>> &distance, int i, int j)
+void CalculateOperations(const vector<vector<Operation>>& operation, const vector<vector<int>> &distance, vector<Operation>& finalOperations, int i, int j)
 {
 	int nexti = -1;
 	int nextj = -1;
@@ -71,7 +71,7 @@ void PrintOperations(const vector<vector<Operation>>& operation, const vector<ve
 	{
 		return;
 	}
-	cout << operation[i][j] << ' ';
+	finalOperations.push_back(operation[i][j]);
 	if (distance[i - 1][j - 1] < nextdistance)
 	{
 		nextdistance = distance[i - 1][j - 1];
@@ -90,14 +90,14 @@ void PrintOperations(const vector<vector<Operation>>& operation, const vector<ve
 		nexti = i - 1;
 		nextj = j;
 	}
-	PrintOperations(operation, distance, nexti, nextj);
+	CalculateOperations(operation, distance, finalOperations, nexti, nextj);
 }
 
-void PrintOperations(const vector<vector<Operation>>& operation, const vector<vector<int>> &distance)
+void CalculateOperations(const vector<vector<Operation>>& operation, const vector<vector<int>> &distance, vector<Operation>& finalOperations)
 {
 	int isize = operation.size() - 1;
 	int jsize = operation[0].size() - 1;
-	PrintOperations(operation, distance, isize, jsize);
+	CalculateOperations(operation, distance, finalOperations, isize, jsize);
 }
 
 int GetDistance(const vector<vector<int>>& distance, string word1, string word2)
@@ -173,6 +173,14 @@ void CalculateDistanceMap(vector<vector<int>>& distance, vector<vector<Operation
 	}
 }
 
+void PrintFinalOperations(vector<Operation>& finalOperations)
+{
+	for (auto i = finalOperations.rbegin(); i != finalOperations.rend(); i++)
+	{
+		cout << *i << " ";
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc == 9)
@@ -196,13 +204,18 @@ int main(int argc, char* argv[])
 
 		CalculateDistanceMap(distance, operation, word[0], word[1], cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
 
-		cout << "Cost:" << endl;
+		cout << "Distance map:" << endl;
 		PrintDistanceMap(distance, word[0], word[1]);
 
-		cout << "Operations:" << endl;
+		cout << "Operation map:" << endl;
 		PrintOperationMap(operation, word[0], word[1]);
 
-		PrintOperations(operation, distance);
+		vector<Operation> finalOperations;
+		CalculateOperations(operation, distance, finalOperations);
+
+		cout << endl << endl << "Final opertions: " << endl << word[0]  << " to " << word[1] << endl;
+		Operation::SetPrintType(Operation::PrintType::Long);
+		PrintFinalOperations(finalOperations);
 	}
 	else
 	{
