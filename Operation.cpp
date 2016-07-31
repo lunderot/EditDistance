@@ -34,6 +34,11 @@ Operation::~Operation()
 {
 }
 
+Operation::Type Operation::GetType() const
+{
+	return type;
+}
+
 void Operation::SetPrintType(PrintType printType)
 {
 	Operation::printType = printType;

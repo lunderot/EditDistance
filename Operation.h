@@ -31,6 +31,8 @@ public:
 	Operation(Type type, int position);
 	~Operation();
 
+	Type GetType() const;
+
 	static void SetPrintType(PrintType printType);
 	static PrintType GetPrintType();
 

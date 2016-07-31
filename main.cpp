@@ -98,6 +98,21 @@ void CalculateOperations(const vector<vector<Operation>>& operation, const vecto
 	int isize = operation.size() - 1;
 	int jsize = operation[0].size() - 1;
 	CalculateOperations(operation, distance, finalOperations, isize, jsize);
+
+	reverse(finalOperations.begin(), finalOperations.end());
+
+	//Check for twiddle operations and remove the operation before since twiddle operates on two letters
+	for (auto i = finalOperations.begin(); i != finalOperations.end(); )
+	{
+		if (next(i) != finalOperations.end() && next(i)->GetType() == Operation::Twiddle)
+		{
+			i = finalOperations.erase(i);
+		}
+		else
+		{
+			++i;
+		}
+	}
 }
 
 int GetDistance(const vector<vector<int>>& distance, string word1, string word2)
@@ -175,7 +190,7 @@ void CalculateDistanceMap(vector<vector<int>>& distance, vector<vector<Operation
 
 void PrintFinalOperations(vector<Operation>& finalOperations)
 {
-	for (auto i = finalOperations.rbegin(); i != finalOperations.rend(); i++)
+	for (auto i = finalOperations.begin(); i != finalOperations.end(); i++)
 	{
 		cout << *i << " ";
 	}
