@@ -113,6 +113,28 @@ void CalculateOperations(const vector<vector<Operation>>& operation, const vecto
 			++i;
 		}
 	}
+	//Check if it's possible to replace delete operations with a kill operation
+	int deleteCounter = 0;
+	for (auto i = finalOperations.rbegin(); i != finalOperations.rend(); i++)
+	{
+		if (i->GetType() == Operation::Delete)
+		{
+			deleteCounter++;
+		}
+		else
+		{
+			break;
+		}
+	}
+	//Remove the delete operations at the end
+	unsigned int size = finalOperations.size();
+	finalOperations.erase(finalOperations.end() - deleteCounter, finalOperations.end());
+	//Add the kill operation to the end if needed
+	if (deleteCounter > 0)
+	{
+		finalOperations.push_back(Operation(Operation::Kill, (int)size - deleteCounter));
+	}
+	
 }
 
 int GetDistance(const vector<vector<int>>& distance, string word1, string word2)
