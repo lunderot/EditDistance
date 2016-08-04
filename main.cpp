@@ -93,7 +93,7 @@ void CalculateOperations(const vector<vector<Operation>>& operation, const vecto
 	CalculateOperations(operation, distance, finalOperations, nexti, nextj);
 }
 
-void CalculateOperations(const vector<vector<Operation>>& operation, const vector<vector<int>> &distance, vector<Operation>& finalOperations)
+void CalculateOperations(const size_t wordSize, const vector<vector<Operation>>& operation, const vector<vector<int>> &distance, vector<Operation>& finalOperations)
 {
 	int isize = operation.size() - 1;
 	int jsize = operation[0].size() - 1;
@@ -127,12 +127,11 @@ void CalculateOperations(const vector<vector<Operation>>& operation, const vecto
 		}
 	}
 	//Remove the delete operations at the end
-	unsigned int size = finalOperations.size();
 	finalOperations.erase(finalOperations.end() - deleteCounter, finalOperations.end());
 	//Add the kill operation to the end if needed
 	if (deleteCounter > 0)
 	{
-		finalOperations.push_back(Operation(Operation::Kill, (int)size - deleteCounter));
+		finalOperations.push_back(Operation(Operation::Kill, (int)wordSize));
 	}
 	
 }
@@ -248,7 +247,7 @@ int main(int argc, char* argv[])
 		PrintOperationMap(operation, word[0], word[1]);
 
 		vector<Operation> finalOperations;
-		CalculateOperations(operation, distance, finalOperations);
+		CalculateOperations(word[1].length(), operation, distance, finalOperations);
 
 		cout << endl << endl << "Final opertions: " << endl << word[0]  << " to " << word[1] << endl;
 		Operation::SetPrintType(Operation::PrintType::Long);
