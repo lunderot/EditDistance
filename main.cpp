@@ -217,6 +217,39 @@ void PrintFinalOperations(vector<Operation>& finalOperations)
 	}
 }
 
+int CalculateFinalCost(const vector<Operation>& finalOperations,
+	int copyCost, int replaceCost, int deleteCost, int insertCost, int twiddleCost, int killCost)
+{
+	int finalCost = 0;
+	for (auto i = finalOperations.begin(); i != finalOperations.end(); i++)
+	{
+		switch (i->GetType())
+		{
+		case Operation::Copy:
+			finalCost += copyCost;
+			break;
+		case Operation::Replace:
+			finalCost += replaceCost;
+			break;
+		case Operation::Delete:
+			finalCost += deleteCost;
+			break;
+		case Operation::Insert:
+			finalCost += insertCost;
+			break;
+		case Operation::Twiddle:
+			finalCost += twiddleCost;
+			break;
+		case Operation::Kill:
+			finalCost += killCost;
+			break;
+		default:
+			break;
+		}
+	}
+	return finalCost;
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc == 9)
@@ -252,6 +285,10 @@ int main(int argc, char* argv[])
 		cout << endl << endl << "Final opertions: " << endl << word[0]  << " to " << word[1] << endl;
 		Operation::SetPrintType(Operation::PrintType::Long);
 		PrintFinalOperations(finalOperations);
+
+		//Final cost
+		int finalCost = CalculateFinalCost(finalOperations, cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
+		cout << endl << endl << "Final cost: " << finalCost << endl;
 	}
 	else
 	{
