@@ -256,6 +256,7 @@ int main(int argc, char* argv[])
 	{
 		Operation::SetPrintType(Operation::PrintType::Short);
 
+		//Grab the strings and costs from the command line
 		string word[2];
 		word[0] = string(argv[1]);
 		word[1] = string(argv[2]);
@@ -266,27 +267,31 @@ int main(int argc, char* argv[])
 			cost[i] = atoi(argv[i + 3]);
 		}
 
+		//Init the maps
 		vector<vector<int>> distance;
 		vector<vector<Operation>> operation;
-
 		InitMap(distance, operation, word[0], word[1], cost[2], cost[3]);
 
+		//Perform edit distance
 		CalculateDistanceMap(distance, operation, word[0], word[1], cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
 
+		//Print the maps for debugging
 		cout << "Distance map:" << endl;
 		PrintDistanceMap(distance, word[0], word[1]);
 
 		cout << "Operation map:" << endl;
 		PrintOperationMap(operation, word[0], word[1]);
 
+		//Calculate the operations using the data generated from edit distance
 		vector<Operation> finalOperations;
 		CalculateOperations(word[1].length(), operation, distance, finalOperations);
 
+		//Print the operations made
 		cout << endl << endl << "Final opertions: " << endl << word[0]  << " to " << word[1] << endl;
 		Operation::SetPrintType(Operation::PrintType::Long);
 		PrintFinalOperations(finalOperations);
 
-		//Final cost
+		//Calculate and print the final cost
 		int finalCost = CalculateFinalCost(finalOperations, cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
 		cout << endl << endl << "Final cost: " << finalCost << endl;
 	}
