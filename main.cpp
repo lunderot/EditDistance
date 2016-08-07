@@ -275,30 +275,22 @@ int main(int argc, char* argv[])
 		//Perform edit distance
 		CalculateDistanceMap(distance, operation, word[0], word[1], cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
 
-		//Print the maps for debugging
-		cout << "Distance map:" << endl;
-		PrintDistanceMap(distance, word[0], word[1]);
-
-		cout << "Operation map:" << endl;
-		PrintOperationMap(operation, word[0], word[1]);
-
 		//Calculate the operations using the data generated from edit distance
 		vector<Operation> finalOperations;
 		CalculateOperations(word[1].length(), operation, distance, finalOperations);
 
 		//Print the operations made
-		cout << endl << endl << "Final opertions: " << endl << word[0]  << " to " << word[1] << endl;
+		cout << word[0]  << " to " << word[1] << endl;
 		Operation::SetPrintType(Operation::PrintType::Long);
 		PrintFinalOperations(finalOperations);
 
 		//Calculate and print the final cost
 		int finalCost = CalculateFinalCost(finalOperations, cost[0], cost[1], cost[2], cost[3], cost[4], cost[5]);
-		cout << endl << endl << "Final cost: " << finalCost << endl;
+		cout << endl << "Cost: " << finalCost << endl << endl;
 	}
 	else
 	{
 		cout << "Usage: " << argv[0] << " string1 string2 copyCost replaceCost deleteCost insertCost twiddleCost killCost" << endl;
 	}
-	cin.get();
 	return 0;
 }
