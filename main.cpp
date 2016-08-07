@@ -71,7 +71,10 @@ void CalculateOperations(const vector<vector<Operation>>& operation, const vecto
 	{
 		return;
 	}
-	finalOperations.push_back(operation[i][j]);
+	if (!(i == 0 && j == 0))
+	{
+		finalOperations.push_back(operation[i][j]);
+	}
 	if (i > 0 && j > 0 && distance[i - 1][j - 1] < nextdistance)
 	{
 		nextdistance = distance[i - 1][j - 1];
