@@ -67,24 +67,24 @@ void CalculateOperations(const vector<vector<Operation>>& operation, const vecto
 	int nexti = -1;
 	int nextj = -1;
 	int nextdistance = std::numeric_limits<int>::max();
-	if (i <= 0 || j <= 0)
+	if (i < 0 || j < 0)
 	{
 		return;
 	}
 	finalOperations.push_back(operation[i][j]);
-	if (distance[i - 1][j - 1] < nextdistance)
+	if (i > 0 && j > 0 && distance[i - 1][j - 1] < nextdistance)
 	{
 		nextdistance = distance[i - 1][j - 1];
 		nexti = i - 1;
 		nextj = j - 1;
 	}
-	if (distance[i][j - 1] < nextdistance)
+	if (j > 0 && distance[i][j - 1] < nextdistance)
 	{
 		nextdistance = distance[i][j - 1];
 		nexti = i;
 		nextj = j - 1;
 	}
-	if (distance[i - 1][j] < nextdistance)
+	if (i > 0 && distance[i - 1][j] < nextdistance)
 	{
 		nextdistance = distance[i - 1][j];
 		nexti = i - 1;
